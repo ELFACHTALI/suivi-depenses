@@ -1,0 +1,30 @@
+# Overrides de production — utiliser avec :
+# docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+services:
+  db:
+    restart: always
+    ports: []  # pas d'exposition directe en prod
+
+  redis:
+    restart: always
+    ports: []
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    restart: always
+    volumes: []  # pas de montage de source en prod
+    environment:
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: always
+    volumes: []
+    ports:
+      - "5173:80"  # Nginx sert le build statique

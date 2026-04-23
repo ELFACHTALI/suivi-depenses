@@ -1,0 +1,43 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+build/
+.vite/
+
+# Drizzle generated files
+drizzle/
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker volumes (local data)
+.postgres-data/
+.redis-data/
+
+# TypeScript
+*.tsbuildinfo
+
+# Coverage
+coverage/
+
+# Uploads / receipts (local dev)
+uploads/

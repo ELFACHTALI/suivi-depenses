@@ -61,6 +61,7 @@ gcloud sql instances describe "$SQL_INSTANCE" \
   --project="$PROJECT_ID" &>/dev/null \
   || gcloud sql instances create "$SQL_INSTANCE" \
        --database-version=POSTGRES_16 \
+       --edition=ENTERPRISE \
        --tier=db-f1-micro \
        --region="$REGION" \
        --project="$PROJECT_ID" \

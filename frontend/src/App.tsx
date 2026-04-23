@@ -4,6 +4,7 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useAuthStore } from "./store/auth.ts";
 import AppLayout from "./layouts/AppLayout.tsx";
 import AuthLayout from "./layouts/AuthLayout.tsx";
@@ -55,5 +56,24 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
+  const [ready, setReady] = useState(false);
+  const { user, setAccessToken, clearAuth } = useAuthStore();
+
+  useEffect(() => {
+    if (!user) {
+      setReady(true);
+      return;
+    }
+    // user est en localStorage mais accessToken est en mémoire seulement :
+    // on tente un refresh silencieux au démarrage (cookie httpOnly)
+    const BASE = import.meta.env.VITE_API_URL ?? "http://localhost:3000/api/v1";
+    fetch(`${BASE}/auth/refresh`, { method: "POST", credentials: "include" })
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then(({ accessToken }: { accessToken: string }) => setAccessToken(accessToken))
+      .catch(() => clearAuth())
+      .finally(() => setReady(true));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (!ready) return null;
   return <RouterProvider router={router} />;
 }

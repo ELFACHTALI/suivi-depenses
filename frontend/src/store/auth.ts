@@ -28,11 +28,13 @@ export const useAuthStore = create<AuthState>()(
       setAuth: (user, accessToken) => set({ user, accessToken }),
       setAccessToken: (accessToken) => set({ accessToken }),
       clearAuth: () => set({ user: null, accessToken: null }),
-      isAuthenticated: () => !!get().accessToken && !!get().user,
+      // L'user suffit : le token sera rafraîchi silencieusement au démarrage
+      isAuthenticated: () => !!get().user,
     }),
     {
       name: "fintrack-auth",
-      partialize: (s) => ({ user: s.user, accessToken: s.accessToken }),
+      // On ne persiste que l'objet user (UI), jamais l'accessToken (expire en 15 min)
+      partialize: (s) => ({ user: s.user }),
     }
   )
 );

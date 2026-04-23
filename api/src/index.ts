@@ -2,7 +2,11 @@ import "dotenv/config";
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
-import healthRouter from "./routes/health.ts";
+import cookieParser from "cookie-parser";
+import { publicLimiter } from "./middleware/rateLimiter.ts";
+import { errorHandler } from "./middleware/errorHandler.ts";
+import router from "./router.ts";
+import { seedDefaultCategories } from "./modules/categories/seed.ts";
 
 const app = express();
 const PORT = parseInt(process.env.PORT ?? "3000", 10);
@@ -14,11 +18,17 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
+app.use(cookieParser());
+app.use(publicLimiter);
 
-app.use("/api/v1/health", healthRouter);
+app.use("/api/v1", router);
 
-app.listen(PORT, () => {
+app.use(errorHandler);
+
+app.listen(PORT, async () => {
   console.log(`API Fintrack démarrée sur http://localhost:${PORT}`);
-  console.log(`Health : http://localhost:${PORT}/api/v1/health`);
+  await seedDefaultCategories().catch((e) =>
+    console.warn("[Seed] Catégories non insérées :", e.message)
+  );
 });

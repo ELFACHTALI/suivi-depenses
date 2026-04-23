@@ -43,6 +43,7 @@ services:
       NODE_ENV: development
       DATABASE_URL: postgresql://${POSTGRES_USER:-fintrack}:${POSTGRES_PASSWORD:-fintrack}@db:5432/${POSTGRES_DB:-fintrack}
       REDIS_URL: redis://redis:6379
+      FRONTEND_URL: http://localhost:5173
     volumes:
       - ./api:/app
       - /app/node_modules

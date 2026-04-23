@@ -139,7 +139,45 @@ export async function getDashboard(userId: string, month?: string) {
     .orderBy(sql`spent DESC`)
     .limit(4);
 
-  // ── 6. Dernier score santé ───────────────────────────────────────────────────
+  // ── 6. Cash flow 6 derniers mois ────────────────────────────────────────────
+  const sixMonthsAgo = new Date();
+  sixMonthsAgo.setDate(1);
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
+  const fromDate = sixMonthsAgo.toISOString().slice(0, 10);
+
+  const rawCashFlow = await db
+    .select({
+      monthKey: sql<string>`TO_CHAR(${transactions.date}::date, 'YYYY-MM')`,
+      income: sql<number>`COALESCE(SUM(CASE WHEN ${transactions.type} = 'income' THEN ${transactions.amount} ELSE 0 END), 0)`,
+      expenses: sql<number>`COALESCE(SUM(CASE WHEN ${transactions.type} = 'expense' THEN ${transactions.amount} ELSE 0 END), 0)`,
+    })
+    .from(transactions)
+    .where(
+      and(
+        eq(transactions.userId, userId),
+        isNull(transactions.deletedAt),
+        isNull(transactions.transferId),
+        sql`${transactions.date} >= ${fromDate}`
+      )
+    )
+    .groupBy(sql`TO_CHAR(${transactions.date}::date, 'YYYY-MM')`)
+    .orderBy(sql`TO_CHAR(${transactions.date}::date, 'YYYY-MM') ASC`);
+
+  // Remplir les mois manquants avec des zéros
+  const cashFlowMap = Object.fromEntries(rawCashFlow.map((r) => [r.monthKey, r]));
+  const fmt = new Intl.DateTimeFormat("fr-FR", { month: "short" });
+  const cashFlow = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date(sixMonthsAgo);
+    d.setMonth(sixMonthsAgo.getMonth() + i);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    return {
+      month: fmt.format(d),
+      income: Number(cashFlowMap[key]?.income ?? 0),
+      expenses: Number(cashFlowMap[key]?.expenses ?? 0),
+    };
+  });
+
+  // ── 7. Dernier score santé ───────────────────────────────────────────────────
   const [latestInsight] = await db
     .select({ score: insights.score, weekStart: insights.weekStart, tips: insights.tips })
     .from(insights)
@@ -150,6 +188,7 @@ export async function getDashboard(userId: string, month?: string) {
   return {
     period: targetMonth,
     netBalance,
+    cashFlow,
     monthly: {
       income: monthly.income,
       expenses: monthly.expenses,

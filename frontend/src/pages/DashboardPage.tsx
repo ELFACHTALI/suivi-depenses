@@ -71,7 +71,7 @@ export default function DashboardPage() {
       {/* Charts + Score + Transactions + Budgets */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div className="xl:col-span-2 space-y-6">
-          <CashFlowChart currency={user?.referenceCurrency} />
+          <CashFlowChart data={d?.cashFlow} currency={user?.referenceCurrency} />
           <RecentTransactions transactions={d?.recentTransactions} />
         </div>
         <div className="space-y-6">

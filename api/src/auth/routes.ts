@@ -181,6 +181,38 @@ router.post("/logout", requireAuth, async (req, res, next) => {
   }
 });
 
+// ── PUT /me ───────────────────────────────────────────────────────────────────
+router.put("/me", requireAuth, async (req, res, next) => {
+  try {
+    const { name, referenceCurrency, timezone, language } = req.body;
+    const [updated] = await db
+      .update(users)
+      .set({
+        ...(name && { name }),
+        ...(referenceCurrency && { referenceCurrency }),
+        ...(timezone && { timezone }),
+        ...(language && { language }),
+        updatedAt: new Date(),
+      })
+      .where(and(eq(users.id, req.user!.sub), isNull(users.deletedAt)))
+      .returning({
+        id: users.id,
+        email: users.email,
+        name: users.name,
+        planType: users.planType,
+        referenceCurrency: users.referenceCurrency,
+        timezone: users.timezone,
+        language: users.language,
+        isTotpEnabled: users.isTotpEnabled,
+        createdAt: users.createdAt,
+      });
+    if (!updated) throw new AppError(404, "Utilisateur introuvable");
+    res.json(updated);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // ── GET /me ───────────────────────────────────────────────────────────────────
 router.get("/me", requireAuth, async (req, res, next) => {
   try {

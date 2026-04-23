@@ -12,9 +12,6 @@ dist/
 build/
 .vite/
 
-# Drizzle generated files
-drizzle/
-
 # Logs
 *.log
 logs/

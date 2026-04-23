@@ -3,9 +3,11 @@ import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { publicLimiter } from "./middleware/rateLimiter.ts";
 import { errorHandler } from "./middleware/errorHandler.ts";
 import router from "./router.ts";
+import { db } from "./db/index.ts";
 import { seedDefaultCategories } from "./modules/categories/seed.ts";
 import { startHealthScoreWorker } from "./jobs/healthScore.ts";
 import { startRecurringWorker } from "./jobs/recurringTransactions.ts";
@@ -30,6 +32,12 @@ app.use(errorHandler);
 
 app.listen(PORT, async () => {
   console.log(`API Fintrack démarrée sur http://localhost:${PORT}`);
+
+  // Migrations automatiques au démarrage
+  await migrate(db, { migrationsFolder: "./drizzle" }).catch((e) =>
+    console.warn("[Migrate] Erreur :", e.message)
+  );
+  console.log("[Migrate] Migrations appliquées.");
 
   await seedDefaultCategories().catch((e) =>
     console.warn("[Seed] Catégories non insérées :", e.message)

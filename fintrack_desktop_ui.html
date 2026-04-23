@@ -1,0 +1,1123 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600&family=DM+Mono:wght@400;500&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --font: 'DM Sans', sans-serif;
+    --mono: 'DM Mono', monospace;
+    --bg: #F7F6F3;
+    --surface: #FFFFFF;
+    --surface2: #F0EFE9;
+    --border: rgba(0,0,0,0.08);
+    --border-md: rgba(0,0,0,0.12);
+    --text-1: #1A1916;
+    --text-2: #5C5B56;
+    --text-3: #A09E98;
+    --accent: #1A1916;
+    --green: #2D7A4E;
+    --green-bg: #E8F5EE;
+    --red: #C0392B;
+    --red-bg: #FDECEA;
+    --amber: #8B5E0A;
+    --amber-bg: #FEF3DE;
+    --blue: #1A5FA8;
+    --blue-bg: #E8F1FB;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+  }
+
+  body { font-family: var(--font); background: var(--bg); color: var(--text-1); font-size: 13px; }
+
+  .app { display: flex; height: 100vh; min-height: 700px; }
+
+  /* Sidebar */
+  .sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+  }
+  .logo { padding: 0 20px 24px; display: flex; align-items: center; gap: 8px; }
+  .logo-mark {
+    width: 28px; height: 28px; background: var(--text-1);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  }
+  .logo-mark span { color: #fff; font-size: 12px; font-weight: 600; letter-spacing: -0.5px; }
+  .logo-text { font-size: 15px; font-weight: 600; letter-spacing: -0.3px; }
+
+  .nav-section { padding: 0 12px; margin-bottom: 4px; }
+  .nav-label { font-size: 10px; font-weight: 500; color: var(--text-3); letter-spacing: 0.8px; text-transform: uppercase; padding: 0 8px; margin-bottom: 4px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: var(--radius-sm);
+    cursor: pointer; color: var(--text-2);
+    font-size: 13px; font-weight: 400;
+    transition: background 0.15s;
+    margin-bottom: 1px;
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--text-1); }
+  .nav-item.active { background: var(--text-1); color: #fff; font-weight: 500; }
+  .nav-item.active .nav-icon { color: #fff; }
+  .nav-icon { font-size: 15px; width: 18px; text-align: center; }
+  .nav-badge {
+    margin-left: auto; background: var(--red); color: #fff;
+    font-size: 10px; font-weight: 600; padding: 1px 6px;
+    border-radius: 20px; min-width: 18px; text-align: center;
+  }
+
+  .sidebar-footer { margin-top: auto; padding: 12px; border-top: 1px solid var(--border); }
+  .user-chip { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: var(--radius-sm); cursor: pointer; }
+  .user-chip:hover { background: var(--surface2); }
+  .avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--text-1); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; font-weight: 600; flex-shrink: 0; }
+  .user-info .name { font-size: 12px; font-weight: 500; }
+  .user-info .plan { font-size: 11px; color: var(--text-3); }
+  .premium-badge { margin-left: auto; font-size: 10px; font-weight: 600; color: var(--amber); background: var(--amber-bg); padding: 2px 7px; border-radius: 20px; }
+
+  /* Main */
+  .main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+  .screen { display: none; flex-direction: column; flex: 1; }
+  .screen.active { display: flex; }
+
+  /* Header */
+  .header {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 0 28px; height: 56px; display: flex; align-items: center;
+    gap: 16px; position: sticky; top: 0; z-index: 10;
+  }
+  .header h1 { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; }
+  .header-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .period-selector {
+    display: flex; align-items: center; gap: 4px;
+    border: 1px solid var(--border-md); border-radius: var(--radius-sm);
+    padding: 5px 10px; font-size: 12px; cursor: pointer; color: var(--text-2);
+    background: var(--surface);
+  }
+  .btn-primary {
+    background: var(--text-1); color: #fff; border: none;
+    padding: 7px 14px; border-radius: var(--radius-sm); font-size: 12px;
+    font-weight: 500; cursor: pointer; font-family: var(--font);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .btn-ghost {
+    background: transparent; color: var(--text-2); border: 1px solid var(--border-md);
+    padding: 7px 12px; border-radius: var(--radius-sm); font-size: 12px;
+    font-weight: 400; cursor: pointer; font-family: var(--font);
+  }
+
+  /* Content */
+  .content { padding: 24px 28px; flex: 1; }
+
+  /* Stat Cards */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px; }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-md); padding: 16px 18px;
+  }
+  .stat-label { font-size: 11px; color: var(--text-3); font-weight: 500; letter-spacing: 0.3px; margin-bottom: 8px; text-transform: uppercase; }
+  .stat-value { font-size: 22px; font-weight: 600; letter-spacing: -0.8px; margin-bottom: 6px; font-family: var(--mono); }
+  .stat-change { font-size: 11px; display: flex; align-items: center; gap: 4px; }
+  .up { color: var(--red); }
+  .down { color: var(--green); }
+  .neutral { color: var(--text-3); }
+
+  /* Main Grid */
+  .main-grid { display: grid; grid-template-columns: 1fr 340px; gap: 16px; }
+
+  /* Card */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-md); overflow: hidden;
+  }
+  .card-header { padding: 16px 18px 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+  .card-title { font-size: 13px; font-weight: 600; }
+  .card-body { padding: 16px 18px; }
+  .see-all { font-size: 12px; color: var(--text-3); cursor: pointer; }
+  .see-all:hover { color: var(--text-1); }
+
+  /* Budget bars */
+  .budget-item { margin-bottom: 14px; }
+  .budget-item:last-child { margin-bottom: 0; }
+  .budget-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .budget-cat { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; }
+  .cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .budget-amounts { font-size: 11px; color: var(--text-3); font-family: var(--mono); }
+  .budget-bar { height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .budget-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+
+  /* Transactions */
+  .txn-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .txn-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .txn-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .txn-info { flex: 1; }
+  .txn-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .txn-meta { font-size: 11px; color: var(--text-3); }
+  .txn-amount { font-size: 13px; font-weight: 600; font-family: var(--mono); }
+  .txn-amount.neg { color: var(--red); }
+  .txn-amount.pos { color: var(--green); }
+
+  /* Cash flow chart */
+  .chart-area { height: 130px; position: relative; margin: 4px 0 8px; }
+  .chart-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-3); padding: 0 4px; font-family: var(--mono); }
+
+  /* Score card */
+  .score-ring { display: flex; flex-direction: column; align-items: center; padding: 16px 0 8px; }
+  .score-ring svg { overflow: visible; }
+  .score-number { font-size: 32px; font-weight: 600; letter-spacing: -1px; font-family: var(--mono); }
+  .score-label { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+  .score-breakdown { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .score-item { background: var(--surface2); border-radius: var(--radius-sm); padding: 8px 10px; }
+  .score-item-label { font-size: 10px; color: var(--text-3); margin-bottom: 3px; }
+  .score-item-val { font-size: 13px; font-weight: 600; font-family: var(--mono); }
+
+  /* Objectives */
+  .obj-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .obj-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .obj-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .obj-icon { font-size: 16px; }
+  .obj-name { font-size: 13px; font-weight: 500; }
+  .obj-target { font-size: 11px; color: var(--text-3); font-family: var(--mono); }
+  .obj-progress { font-size: 18px; font-weight: 600; font-family: var(--mono); margin-bottom: 6px; }
+  .obj-bar { height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; margin-bottom: 5px; }
+  .obj-fill { height: 100%; border-radius: 3px; }
+  .obj-meta { font-size: 11px; color: var(--text-3); }
+
+  /* Insights */
+  .insight-item { padding: 12px 14px; border-radius: var(--radius-sm); margin-bottom: 8px; }
+  .insight-item:last-child { margin-bottom: 0; }
+  .insight-tag { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 4px; }
+  .insight-text { font-size: 12px; line-height: 1.5; }
+
+  /* Nav tabs */
+  .tab-bar { display: flex; gap: 2px; background: var(--surface2); padding: 3px; border-radius: var(--radius-sm); margin-right: 8px; }
+  .tab {
+    padding: 5px 12px; border-radius: 6px; font-size: 12px;
+    cursor: pointer; color: var(--text-2); font-weight: 400;
+    border: none; background: transparent; font-family: var(--font);
+  }
+  .tab.active { background: var(--surface); color: var(--text-1); font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+  /* Empty state */
+  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 24px; text-align: center; flex: 1; }
+  .empty-illustration { width: 80px; height: 80px; background: var(--surface2); border-radius: 24px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 32px; }
+  .empty-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; letter-spacing: -0.3px; }
+  .empty-desc { font-size: 13px; color: var(--text-2); max-width: 300px; line-height: 1.6; margin-bottom: 20px; }
+  .steps-row { display: flex; gap: 12px; margin-bottom: 24px; }
+  .step-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px 16px; text-align: left; width: 150px; }
+  .step-num { font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .step-title { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+  .step-desc { font-size: 11px; color: var(--text-2); line-height: 1.4; }
+
+  /* Full txn list screen */
+  .filter-bar { display: flex; align-items: center; gap: 10px; padding: 14px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 0; }
+  .search-box { flex: 1; display: flex; align-items: center; gap: 8px; background: var(--surface2); border-radius: var(--radius-sm); padding: 7px 12px; }
+  .search-box input { border: none; background: transparent; font-family: var(--font); font-size: 12px; color: var(--text-1); outline: none; flex: 1; }
+  .search-box input::placeholder { color: var(--text-3); }
+  .chip { border: 1px solid var(--border-md); border-radius: 20px; padding: 5px 12px; font-size: 11px; cursor: pointer; color: var(--text-2); white-space: nowrap; }
+  .chip.active-chip { background: var(--text-1); color: #fff; border-color: var(--text-1); }
+  .txn-group-label { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; padding: 14px 0 8px; }
+  .txn-row { display: flex; align-items: center; gap: 14px; padding: 10px 14px; border-radius: var(--radius-sm); cursor: pointer; }
+  .txn-row:hover { background: var(--surface2); }
+
+  /* Budgets screen */
+  .budgets-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .budget-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; }
+  .bcard-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+  .bcard-cat { display: flex; align-items: center; gap: 8px; }
+  .bcard-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .bcard-name { font-size: 13px; font-weight: 500; }
+  .bcard-period { font-size: 11px; color: var(--text-3); }
+  .bcard-status { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px; }
+  .bcard-amount { font-size: 20px; font-weight: 600; font-family: var(--mono); letter-spacing: -0.5px; margin-bottom: 3px; }
+  .bcard-limit { font-size: 11px; color: var(--text-3); font-family: var(--mono); margin-bottom: 10px; }
+  .bcard-bar { height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .bcard-fill { height: 100%; border-radius: 3px; }
+  .bcard-footer { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: var(--text-3); }
+
+  /* Settings screen */
+  .settings-layout { display: grid; grid-template-columns: 200px 1fr; gap: 20px; }
+  .settings-nav { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 8px; height: fit-content; }
+  .settings-nav-item { padding: 8px 12px; border-radius: var(--radius-sm); font-size: 12px; cursor: pointer; color: var(--text-2); }
+  .settings-nav-item:hover { background: var(--surface2); }
+  .settings-nav-item.active { background: var(--surface2); color: var(--text-1); font-weight: 500; }
+  .settings-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); }
+  .settings-section { padding: 20px 24px; border-bottom: 1px solid var(--border); }
+  .settings-section:last-child { border-bottom: none; }
+  .settings-section-title { font-size: 13px; font-weight: 600; margin-bottom: 14px; }
+  .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-row-label { font-size: 13px; font-weight: 500; }
+  .settings-row-desc { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+  .toggle { width: 36px; height: 20px; background: #2D7A4E; border-radius: 10px; cursor: pointer; position: relative; flex-shrink: 0; }
+  .toggle::after { content: ''; position: absolute; width: 16px; height: 16px; background: white; border-radius: 50%; top: 2px; right: 2px; }
+  .toggle.off { background: var(--surface2); }
+  .toggle.off::after { right: auto; left: 2px; }
+  .profile-card { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .avatar-lg { width: 52px; height: 52px; border-radius: 50%; background: var(--text-1); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; font-weight: 600; }
+  .field-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label { font-size: 11px; color: var(--text-3); font-weight: 500; }
+  .field input, .field select {
+    border: 1px solid var(--border-md); border-radius: var(--radius-sm);
+    padding: 7px 10px; font-size: 12px; background: var(--bg);
+    color: var(--text-1); font-family: var(--font); outline: none;
+  }
+  .premium-banner {
+    background: var(--text-1); color: #fff; border-radius: var(--radius-md);
+    padding: 16px 20px; display: flex; align-items: center; gap: 16px;
+    margin-bottom: 20px;
+  }
+  .premium-banner-text .title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .premium-banner-text .desc { font-size: 12px; opacity: 0.7; }
+  .btn-white { background: #fff; color: var(--text-1); border: none; padding: 8px 16px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--font); white-space: nowrap; margin-left: auto; }
+
+  /* Nav */
+  .nav-group-header { font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.6px; padding: 12px 20px 4px; }
+</style>
+
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark"><span>F</span></div>
+      <span class="logo-text">Fintrack</span>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Vue générale</div>
+      <div class="nav-item active" onclick="showScreen('dashboard')">
+        <span class="nav-icon">⊞</span> Tableau de bord
+      </div>
+      <div class="nav-item" onclick="showScreen('transactions')">
+        <span class="nav-icon">↕</span> Transactions
+        <span class="nav-badge">3</span>
+      </div>
+    </div>
+
+    <div class="nav-section" style="margin-top:8px;">
+      <div class="nav-label">Pilotage</div>
+      <div class="nav-item" onclick="showScreen('budgets')">
+        <span class="nav-icon">◫</span> Budgets
+      </div>
+      <div class="nav-item" onclick="showScreen('objectifs')">
+        <span class="nav-icon">◎</span> Objectifs
+      </div>
+      <div class="nav-item" onclick="showScreen('insights')">
+        <span class="nav-icon">◈</span> Insights <span style="margin-left:auto;font-size:10px;color:#8B5E0A;background:#FEF3DE;padding:2px 7px;border-radius:20px;font-weight:600;">Premium</span>
+      </div>
+    </div>
+
+    <div class="nav-section" style="margin-top:8px;">
+      <div class="nav-label">Compte</div>
+      <div class="nav-item" onclick="showScreen('empty')">
+        <span class="nav-icon">◌</span> Première utilisation
+      </div>
+      <div class="nav-item" onclick="showScreen('settings')">
+        <span class="nav-icon">◉</span> Paramètres
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="avatar">KA</div>
+        <div class="user-info">
+          <div class="name">Karim Alaoui</div>
+          <div class="plan">Premium</div>
+        </div>
+        <div class="premium-badge">★</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- ===== DASHBOARD ===== -->
+    <div class="screen active" id="screen-dashboard">
+      <div class="header">
+        <h1>Tableau de bord</h1>
+        <div class="tab-bar">
+          <button class="tab active">Mois</button>
+          <button class="tab">Trimestre</button>
+          <button class="tab">Année</button>
+        </div>
+        <div class="header-actions">
+          <div class="period-selector">◁ Avril 2026 ▷</div>
+          <button class="btn-primary">+ Dépense</button>
+        </div>
+      </div>
+      <div class="content">
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Solde net</div>
+            <div class="stat-value">18 430</div>
+            <div class="stat-change neutral"><span>MAD — tous comptes</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Revenus du mois</div>
+            <div class="stat-value">14 200</div>
+            <div class="stat-change down">↑ <span>+4,3% vs mars</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Dépenses du mois</div>
+            <div class="stat-value">9 845</div>
+            <div class="stat-change up">↑ <span>+12% vs mars</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Taux d'épargne</div>
+            <div class="stat-value">30,7%</div>
+            <div class="stat-change down">↑ <span>Objectif 25%</span></div>
+          </div>
+        </div>
+
+        <!-- Grid -->
+        <div class="main-grid">
+          <div style="display:flex;flex-direction:column;gap:16px;">
+
+            <!-- Cash flow -->
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Cash flow — 6 mois</span>
+                <div style="display:flex;align-items:center;gap:16px;font-size:11px;color:var(--text-3);">
+                  <span><span style="display:inline-block;width:10px;height:10px;background:#2D7A4E;border-radius:2px;margin-right:5px;vertical-align:middle;"></span>Revenus</span>
+                  <span><span style="display:inline-block;width:10px;height:10px;background:#E24B4A;border-radius:2px;margin-right:5px;vertical-align:middle;"></span>Dépenses</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart-area">
+                  <svg width="100%" height="130" viewBox="0 0 560 130" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="grev" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#2D7A4E" stop-opacity="0.15"/>
+                        <stop offset="100%" stop-color="#2D7A4E" stop-opacity="0"/>
+                      </linearGradient>
+                      <linearGradient id="gdep" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#E24B4A" stop-opacity="0.12"/>
+                        <stop offset="100%" stop-color="#E24B4A" stop-opacity="0"/>
+                      </linearGradient>
+                    </defs>
+                    <!-- Grid lines -->
+                    <line x1="0" y1="30" x2="560" y2="30" stroke="rgba(0,0,0,0.05)" stroke-width="1"/>
+                    <line x1="0" y1="65" x2="560" y2="65" stroke="rgba(0,0,0,0.05)" stroke-width="1"/>
+                    <line x1="0" y1="100" x2="560" y2="100" stroke="rgba(0,0,0,0.05)" stroke-width="1"/>
+                    <!-- Revenue area -->
+                    <path d="M0,35 C30,33 60,28 93,30 C123,32 153,25 186,22 C216,19 246,26 280,20 C310,15 340,18 373,16 C403,13 433,15 466,14 C496,12 526,10 560,8 L560,130 L0,130 Z" fill="url(#grev)"/>
+                    <path d="M0,35 C30,33 60,28 93,30 C123,32 153,25 186,22 C216,19 246,26 280,20 C310,15 340,18 373,16 C403,13 433,15 466,14 C496,12 526,10 560,8" fill="none" stroke="#2D7A4E" stroke-width="2"/>
+                    <!-- Expense area -->
+                    <path d="M0,70 C30,72 60,68 93,74 C123,79 153,71 186,65 C216,58 246,63 280,68 C310,72 340,66 373,60 C403,55 433,58 466,64 C496,69 526,70 560,72 L560,130 L0,130 Z" fill="url(#gdep)"/>
+                    <path d="M0,70 C30,72 60,68 93,74 C123,79 153,71 186,65 C216,58 246,63 280,68 C310,72 340,66 373,60 C403,55 433,58 466,64 C496,69 526,70 560,72" fill="none" stroke="#E24B4A" stroke-width="2"/>
+                    <!-- Current month dot -->
+                    <circle cx="560" cy="8" r="4" fill="#2D7A4E"/>
+                    <circle cx="560" cy="72" r="4" fill="#E24B4A"/>
+                  </svg>
+                </div>
+                <div class="chart-labels">
+                  <span>Nov</span><span>Déc</span><span>Jan</span><span>Fév</span><span>Mar</span><span>Avr</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Transactions récentes</span>
+                <span class="see-all" onclick="showScreen('transactions')">Voir tout →</span>
+              </div>
+              <div class="card-body">
+                <div class="txn-item">
+                  <div class="txn-icon" style="background:#E8F5EE;">🛒</div>
+                  <div class="txn-info">
+                    <div class="txn-name">Carrefour Maarif</div>
+                    <div class="txn-meta">Alimentation · 22 avr.</div>
+                  </div>
+                  <div class="txn-amount neg">–320 MAD</div>
+                </div>
+                <div class="txn-item">
+                  <div class="txn-icon" style="background:#FEF3DE;">⛽</div>
+                  <div class="txn-info">
+                    <div class="txn-name">Station Afriquia</div>
+                    <div class="txn-meta">Transport · 21 avr.</div>
+                  </div>
+                  <div class="txn-amount neg">–280 MAD</div>
+                </div>
+                <div class="txn-item">
+                  <div class="txn-icon" style="background:#E8F1FB;">💼</div>
+                  <div class="txn-info">
+                    <div class="txn-name">Virement client — TechCo</div>
+                    <div class="txn-meta">Revenus freelance · 20 avr.</div>
+                  </div>
+                  <div class="txn-amount pos">+8 500 MAD</div>
+                </div>
+                <div class="txn-item">
+                  <div class="txn-icon" style="background:#FDECEA;">🍽</div>
+                  <div class="txn-info">
+                    <div class="txn-name">Café & Co Gauthier</div>
+                    <div class="txn-meta">Restaurants · 20 avr.</div>
+                  </div>
+                  <div class="txn-amount neg">–185 MAD</div>
+                </div>
+                <div class="txn-item">
+                  <div class="txn-icon" style="background:#EEEDFE;">🔄</div>
+                  <div class="txn-info">
+                    <div class="txn-name">Netflix · Abonnement</div>
+                    <div class="txn-meta">Abonnements · 18 avr.</div>
+                  </div>
+                  <div class="txn-amount neg">–119 MAD</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right column -->
+          <div style="display:flex;flex-direction:column;gap:16px;">
+
+            <!-- Score -->
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Score de santé financière</span>
+                <span style="font-size:11px;color:#8B5E0A;background:#FEF3DE;padding:2px 8px;border-radius:20px;font-weight:600;">Sem. 17</span>
+              </div>
+              <div class="card-body">
+                <div class="score-ring">
+                  <svg width="110" height="110" viewBox="0 0 110 110">
+                    <circle cx="55" cy="55" r="44" fill="none" stroke="var(--surface2)" stroke-width="8"/>
+                    <circle cx="55" cy="55" r="44" fill="none" stroke="#2D7A4E" stroke-width="8"
+                      stroke-dasharray="276.5" stroke-dashoffset="55.3"
+                      stroke-linecap="round" transform="rotate(-90 55 55)"/>
+                  </svg>
+                  <div style="margin-top:-80px;text-align:center;margin-bottom:20px;">
+                    <div class="score-number" style="color:var(--text-1);">80</div>
+                    <div class="score-label">/ 100</div>
+                  </div>
+                </div>
+                <div class="score-breakdown">
+                  <div class="score-item">
+                    <div class="score-item-label">Taux d'épargne</div>
+                    <div class="score-item-val" style="color:var(--green);">27/30</div>
+                  </div>
+                  <div class="score-item">
+                    <div class="score-item-label">Budgets</div>
+                    <div class="score-item-val" style="color:var(--amber);">18/25</div>
+                  </div>
+                  <div class="score-item">
+                    <div class="score-item-label">Régularité</div>
+                    <div class="score-item-val" style="color:var(--green);">17/20</div>
+                  </div>
+                  <div class="score-item">
+                    <div class="score-item-label">Objectifs</div>
+                    <div class="score-item-val" style="color:var(--blue);">9/10</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Budgets rapides -->
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Budgets du mois</span>
+                <span class="see-all" onclick="showScreen('budgets')">Gérer →</span>
+              </div>
+              <div class="card-body">
+                <div class="budget-item">
+                  <div class="budget-row">
+                    <div class="budget-cat"><div class="cat-dot" style="background:#2D7A4E;"></div>Alimentation</div>
+                    <div class="budget-amounts">1 240 / 1 500 MAD</div>
+                  </div>
+                  <div class="budget-bar"><div class="budget-fill" style="width:83%;background:#2D7A4E;"></div></div>
+                </div>
+                <div class="budget-item">
+                  <div class="budget-row">
+                    <div class="budget-cat"><div class="cat-dot" style="background:#E24B4A;"></div>Restaurants</div>
+                    <div class="budget-amounts">920 / 800 MAD</div>
+                  </div>
+                  <div class="budget-bar"><div class="budget-fill" style="width:100%;background:#E24B4A;"></div></div>
+                </div>
+                <div class="budget-item">
+                  <div class="budget-row">
+                    <div class="budget-cat"><div class="cat-dot" style="background:#1A5FA8;"></div>Transport</div>
+                    <div class="budget-amounts">640 / 1 200 MAD</div>
+                  </div>
+                  <div class="budget-bar"><div class="budget-fill" style="width:53%;background:#1A5FA8;"></div></div>
+                </div>
+                <div class="budget-item">
+                  <div class="budget-row">
+                    <div class="budget-cat"><div class="cat-dot" style="background:#8B5E0A;"></div>Abonnements</div>
+                    <div class="budget-amounts">445 / 600 MAD</div>
+                  </div>
+                  <div class="budget-bar"><div class="budget-fill" style="width:74%;background:#BA7517;"></div></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== EMPTY STATE ===== -->
+    <div class="screen" id="screen-empty">
+      <div class="header">
+        <h1>Tableau de bord</h1>
+        <div class="header-actions">
+          <button class="btn-primary">+ Ajouter un compte</button>
+        </div>
+      </div>
+      <div class="content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;min-height:500px;">
+        <div class="empty-illustration">💳</div>
+        <div class="empty-title">Bienvenue sur Fintrack</div>
+        <div class="empty-desc">Configurez votre espace en quelques minutes pour commencer à piloter vos finances.</div>
+        <div class="steps-row">
+          <div class="step-card">
+            <div class="step-num">Étape 1</div>
+            <div class="step-title">Créer un compte</div>
+            <div class="step-desc">Ajoutez vos comptes espèces, carte ou épargne avec leur solde actuel.</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">Étape 2</div>
+            <div class="step-title">Définir les budgets</div>
+            <div class="step-desc">Fixez des plafonds mensuels par catégorie pour rester dans les clous.</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">Étape 3</div>
+            <div class="step-title">Saisir une dépense</div>
+            <div class="step-desc">Votre premier suivi. Ça prend moins de 10 secondes.</div>
+          </div>
+        </div>
+        <button class="btn-primary" style="font-size:13px;padding:10px 24px;">Démarrer la configuration →</button>
+      </div>
+    </div>
+
+    <!-- ===== TRANSACTIONS ===== -->
+    <div class="screen" id="screen-transactions">
+      <div class="header">
+        <h1>Transactions</h1>
+        <div class="header-actions">
+          <button class="btn-ghost">↓ Export CSV</button>
+          <button class="btn-primary">+ Nouvelle transaction</button>
+        </div>
+      </div>
+      <div class="content">
+        <div class="filter-bar">
+          <div class="search-box" style="max-width:280px;">
+            <span style="font-size:13px;color:var(--text-3);">⌕</span>
+            <input type="text" placeholder="Rechercher une transaction…" />
+          </div>
+          <div class="chip active-chip">Toutes</div>
+          <div class="chip">Dépenses</div>
+          <div class="chip">Revenus</div>
+          <div class="chip">Abonnements</div>
+          <div style="margin-left:auto;display:flex;gap:8px;">
+            <div class="chip">Catégorie ▾</div>
+            <div class="chip">Compte ▾</div>
+          </div>
+        </div>
+
+        <div class="txn-group-label">Aujourd'hui — 23 avril 2026</div>
+        <div class="txn-row">
+          <div class="txn-icon" style="background:#E8F5EE;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🛒</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:500;">Carrefour Maarif</div>
+            <div style="font-size:11px;color:var(--text-3);">Alimentation · Carte CIH</div>
+          </div>
+          <div style="font-size:11px;color:var(--text-3);margin-right:16px;font-family:var(--mono);">23 avr. 09:14</div>
+          <div style="font-size:13px;font-weight:600;font-family:var(--mono);color:var(--red);">–320 MAD</div>
+        </div>
+        <div class="txn-row">
+          <div class="txn-icon" style="background:#FDECEA;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">☕</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:500;">Café Paul — Anfa Place</div>
+            <div style="font-size:11px;color:var(--text-3);">Restaurants · Espèces</div>
+          </div>
+          <div style="font-size:11px;color:var(--text-3);margin-right:16px;font-family:var(--mono);">23 avr. 08:30</div>
+          <div style="font-size:13px;font-weight:600;font-family:var(--mono);color:var(--red);">–75 MAD</div>
+        </div>
+
+        <div class="txn-group-label">Hier — 22 avril 2026</div>
+        <div class="txn-row">
+          <div class="txn-icon" style="background:#FEF3DE;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">⛽</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:500;">Station Afriquia</div>
+            <div style="font-size:11px;color:var(--text-3);">Transport · Carte Attijariwafa</div>
+          </div>
+          <div style="font-size:11px;color:var(--text-3);margin-right:16px;font-family:var(--mono);">22 avr. 18:02</div>
+          <div style="font-size:13px;font-weight:600;font-family:var(--mono);color:var(--red);">–280 MAD</div>
+        </div>
+        <div class="txn-row">
+          <div class="txn-icon" style="background:#E8F1FB;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">💼</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:500;">Virement client — TechCo SARL</div>
+            <div style="font-size:11px;color:var(--text-3);">Revenus freelance · Compte CIH</div>
+          </div>
+          <div style="font-size:11px;color:var(--text-3);margin-right:16px;font-family:var(--mono);">22 avr. 14:47</div>
+          <div style="font-size:13px;font-weight:600;font-family:var(--mono);color:var(--green);">+8 500 MAD</div>
+        </div>
+        <div class="txn-row">
+          <div class="txn-icon" style="background:#FDECEA;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🍽</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:500;">Café & Co Gauthier</div>
+            <div style="font-size:11px;color:var(--text-3);">Restaurants · Espèces · #pro</div>
+          </div>
+          <div style="font-size:11px;color:var(--text-3);margin-right:16px;font-family:var(--mono);">22 avr. 12:30</div>
+          <div style="font-size:13px;font-weight:600;font-family:var(--mono);color:var(--red);">–185 MAD</div>
+        </div>
+
+        <div class="txn-group-label">20–21 avril 2026</div>
+        <div class="txn-row">
+          <div class="txn-icon" style="background:#EEEDFE;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🔄</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:500;">Netflix · Abonnement mensuel</div>
+            <div style="font-size:11px;color:var(--text-3);">Abonnements · Carte CIH · Récurrent</div>
+          </div>
+          <div style="font-size:11px;color:var(--text-3);margin-right:16px;font-family:var(--mono);">21 avr. 00:00</div>
+          <div style="font-size:13px;font-weight:600;font-family:var(--mono);color:var(--red);">–119 MAD</div>
+        </div>
+        <div class="txn-row">
+          <div class="txn-icon" style="background:#EEEDFE;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🔄</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:500;">Spotify Premium</div>
+            <div style="font-size:11px;color:var(--text-3);">Abonnements · Carte CIH · Récurrent</div>
+          </div>
+          <div style="font-size:11px;color:var(--text-3);margin-right:16px;font-family:var(--mono);">20 avr. 00:00</div>
+          <div style="font-size:13px;font-weight:600;font-family:var(--mono);color:var(--red);">–59 MAD</div>
+        </div>
+        <div class="txn-row">
+          <div class="txn-icon" style="background:#E8F5EE;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🏪</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:500;">Marjane — Ain Sbaa</div>
+            <div style="font-size:11px;color:var(--text-3);">Alimentation · Carte Attijariwafa</div>
+          </div>
+          <div style="font-size:11px;color:var(--text-3);margin-right:16px;font-family:var(--mono);">20 avr. 11:15</div>
+          <div style="font-size:13px;font-weight:600;font-family:var(--mono);color:var(--red);">–480 MAD</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== BUDGETS ===== -->
+    <div class="screen" id="screen-budgets">
+      <div class="header">
+        <h1>Budgets</h1>
+        <div class="tab-bar">
+          <button class="tab active">Mensuel</button>
+          <button class="tab">Annuel</button>
+        </div>
+        <div class="header-actions">
+          <div class="period-selector">◁ Avril 2026 ▷</div>
+          <button class="btn-primary">+ Nouveau budget</button>
+        </div>
+      </div>
+      <div class="content">
+        <div style="display:flex;gap:12px;margin-bottom:20px;">
+          <div class="stat-card" style="flex:1;">
+            <div class="stat-label">Total budgété</div>
+            <div class="stat-value" style="font-size:18px;">11 700</div>
+            <div class="stat-change neutral">MAD ce mois</div>
+          </div>
+          <div class="stat-card" style="flex:1;">
+            <div class="stat-label">Dépensé</div>
+            <div class="stat-value" style="font-size:18px;">9 845</div>
+            <div class="stat-change neutral">84% consommé</div>
+          </div>
+          <div class="stat-card" style="flex:1;">
+            <div class="stat-label">Restant</div>
+            <div class="stat-value" style="font-size:18px;color:var(--green);">1 855</div>
+            <div class="stat-change neutral">8 jours restants</div>
+          </div>
+          <div class="stat-card" style="flex:1;">
+            <div class="stat-label">Catégories en alerte</div>
+            <div class="stat-value" style="font-size:18px;color:var(--red);">2</div>
+            <div class="stat-change up">Restaurants, Loisirs</div>
+          </div>
+        </div>
+
+        <div class="budgets-grid">
+          <div class="budget-card">
+            <div class="bcard-header">
+              <div class="bcard-cat">
+                <div class="bcard-icon" style="background:#E8F5EE;">🛒</div>
+                <div><div class="bcard-name">Alimentation</div><div class="bcard-period">Mensuel</div></div>
+              </div>
+              <div class="bcard-status" style="background:#E8F5EE;color:#2D7A4E;">83% utilisé</div>
+            </div>
+            <div class="bcard-amount">1 240 MAD</div>
+            <div class="bcard-limit">sur 1 500 MAD</div>
+            <div class="bcard-bar"><div class="bcard-fill" style="width:83%;background:#2D7A4E;"></div></div>
+            <div class="bcard-footer"><span>Il reste 260 MAD</span><span>8 j restants</span></div>
+          </div>
+
+          <div class="budget-card" style="border-color:rgba(194,57,43,0.25);">
+            <div class="bcard-header">
+              <div class="bcard-cat">
+                <div class="bcard-icon" style="background:#FDECEA;">🍽</div>
+                <div><div class="bcard-name">Restaurants</div><div class="bcard-period">Mensuel</div></div>
+              </div>
+              <div class="bcard-status" style="background:#FDECEA;color:#C0392B;">115% dépassé</div>
+            </div>
+            <div class="bcard-amount" style="color:var(--red);">920 MAD</div>
+            <div class="bcard-limit">sur 800 MAD · dépassé de 120 MAD</div>
+            <div class="bcard-bar"><div class="bcard-fill" style="width:100%;background:#E24B4A;"></div></div>
+            <div class="bcard-footer"><span style="color:var(--red);">−120 MAD de dépassement</span><span>8 j restants</span></div>
+          </div>
+
+          <div class="budget-card">
+            <div class="bcard-header">
+              <div class="bcard-cat">
+                <div class="bcard-icon" style="background:#FEF3DE;">🚗</div>
+                <div><div class="bcard-name">Transport</div><div class="bcard-period">Mensuel</div></div>
+              </div>
+              <div class="bcard-status" style="background:#E8F5EE;color:#2D7A4E;">53% utilisé</div>
+            </div>
+            <div class="bcard-amount">640 MAD</div>
+            <div class="bcard-limit">sur 1 200 MAD</div>
+            <div class="bcard-bar"><div class="bcard-fill" style="width:53%;background:#1A5FA8;"></div></div>
+            <div class="bcard-footer"><span>Il reste 560 MAD</span><span>8 j restants</span></div>
+          </div>
+
+          <div class="budget-card">
+            <div class="bcard-header">
+              <div class="bcard-cat">
+                <div class="bcard-icon" style="background:#EEEDFE;">🔄</div>
+                <div><div class="bcard-name">Abonnements</div><div class="bcard-period">Mensuel</div></div>
+              </div>
+              <div class="bcard-status" style="background:#FEF3DE;color:#8B5E0A;">74% utilisé</div>
+            </div>
+            <div class="bcard-amount">445 MAD</div>
+            <div class="bcard-limit">sur 600 MAD</div>
+            <div class="bcard-bar"><div class="bcard-fill" style="width:74%;background:#BA7517;"></div></div>
+            <div class="bcard-footer"><span>Il reste 155 MAD</span><span>8 j restants</span></div>
+          </div>
+
+          <div class="budget-card">
+            <div class="bcard-header">
+              <div class="bcard-cat">
+                <div class="bcard-icon" style="background:#E8F1FB;">💻</div>
+                <div><div class="bcard-name">Logiciels & pro</div><div class="bcard-period">Mensuel</div></div>
+              </div>
+              <div class="bcard-status" style="background:#E8F5EE;color:#2D7A4E;">38% utilisé</div>
+            </div>
+            <div class="bcard-amount">380 MAD</div>
+            <div class="bcard-limit">sur 1 000 MAD</div>
+            <div class="bcard-bar"><div class="bcard-fill" style="width:38%;background:#1A5FA8;"></div></div>
+            <div class="bcard-footer"><span>Il reste 620 MAD</span><span>8 j restants</span></div>
+          </div>
+
+          <div class="budget-card" style="border-color:rgba(194,57,43,0.25);">
+            <div class="bcard-header">
+              <div class="bcard-cat">
+                <div class="bcard-icon" style="background:#FDECEA;">🎭</div>
+                <div><div class="bcard-name">Loisirs & sorties</div><div class="bcard-period">Mensuel</div></div>
+              </div>
+              <div class="bcard-status" style="background:#FDECEA;color:#C0392B;">Alerte prédictive</div>
+            </div>
+            <div class="bcard-amount">680 MAD</div>
+            <div class="bcard-limit">sur 700 MAD · rythme : dépassement probable</div>
+            <div class="bcard-bar"><div class="bcard-fill" style="width:97%;background:#E24B4A;"></div></div>
+            <div class="bcard-footer"><span style="color:var(--amber);">Rythme actuel → +190 MAD prévu</span><span>8 j restants</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== OBJECTIFS ===== -->
+    <div class="screen" id="screen-objectifs">
+      <div class="header">
+        <h1>Objectifs d'épargne</h1>
+        <div class="header-actions">
+          <button class="btn-primary">+ Nouvel objectif</button>
+        </div>
+      </div>
+      <div class="content">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+          <div class="card">
+            <div class="card-header">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:18px;">✈️</span>
+                <div>
+                  <div class="card-title">Voyage Japon</div>
+                  <div style="font-size:11px;color:var(--text-3);">Objectif personnel · Compte épargne CIH</div>
+                </div>
+              </div>
+              <span style="font-size:11px;font-weight:600;color:var(--blue);background:var(--blue-bg);padding:3px 9px;border-radius:20px;">En cours</span>
+            </div>
+            <div class="card-body">
+              <div style="font-size:26px;font-weight:600;font-family:var(--mono);letter-spacing:-1px;margin-bottom:4px;">14 200 <span style="font-size:14px;color:var(--text-3);">MAD</span></div>
+              <div style="font-size:12px;color:var(--text-3);margin-bottom:12px;">sur 25 000 MAD · 56,8% atteint</div>
+              <div class="obj-bar"><div class="obj-fill" style="width:57%;background:#1A5FA8;"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);margin-top:6px;margin-bottom:12px;">
+                <span>Manque : 10 800 MAD</span>
+                <span>Proj. : août 2026 à ce rythme</span>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button class="btn-primary" style="flex:1;justify-content:center;">+ Alimenter</button>
+                <button class="btn-ghost">Détails</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:18px;">🏠</span>
+                <div>
+                  <div class="card-title">Apport appartement</div>
+                  <div style="font-size:11px;color:var(--text-3);">Objectif prioritaire · Compte épargne CIH</div>
+                </div>
+              </div>
+              <span style="font-size:11px;font-weight:600;color:var(--amber);background:var(--amber-bg);padding:3px 9px;border-radius:20px;">Long terme</span>
+            </div>
+            <div class="card-body">
+              <div style="font-size:26px;font-weight:600;font-family:var(--mono);letter-spacing:-1px;margin-bottom:4px;">48 000 <span style="font-size:14px;color:var(--text-3);">MAD</span></div>
+              <div style="font-size:12px;color:var(--text-3);margin-bottom:12px;">sur 200 000 MAD · 24% atteint</div>
+              <div class="obj-bar"><div class="obj-fill" style="width:24%;background:#BA7517;"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);margin-top:6px;margin-bottom:12px;">
+                <span>Manque : 152 000 MAD</span>
+                <span>Proj. : mars 2028 à ce rythme</span>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button class="btn-primary" style="flex:1;justify-content:center;">+ Alimenter</button>
+                <button class="btn-ghost">Détails</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:18px;">🆘</span>
+                <div>
+                  <div class="card-title">Fonds d'urgence</div>
+                  <div style="font-size:11px;color:var(--text-3);">Épargne de précaution · 3 mois de charges</div>
+                </div>
+              </div>
+              <span style="font-size:11px;font-weight:600;color:var(--green);background:var(--green-bg);padding:3px 9px;border-radius:20px;">Atteint</span>
+            </div>
+            <div class="card-body">
+              <div style="font-size:26px;font-weight:600;font-family:var(--mono);letter-spacing:-1px;margin-bottom:4px;">31 500 <span style="font-size:14px;color:var(--text-3);">MAD</span></div>
+              <div style="font-size:12px;color:var(--text-3);margin-bottom:12px;">sur 30 000 MAD · 105% — Objectif dépassé !</div>
+              <div class="obj-bar"><div class="obj-fill" style="width:100%;background:#2D7A4E;"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);margin-top:6px;margin-bottom:12px;">
+                <span>Atteint le 3 mars 2026</span>
+                <span>+1 500 MAD de surplus</span>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button class="btn-ghost" style="flex:1;">Archiver</button>
+                <button class="btn-ghost">Détails</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tracker dettes -->
+          <div class="card">
+            <div class="card-header">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:18px;">🏦</span>
+                <div>
+                  <div class="card-title">Crédit auto — Attijari</div>
+                  <div style="font-size:11px;color:var(--text-3);">Tracker de dettes · 5,5% annuel</div>
+                </div>
+              </div>
+              <span style="font-size:11px;font-weight:600;color:var(--red);background:var(--red-bg);padding:3px 9px;border-radius:20px;">Dette</span>
+            </div>
+            <div class="card-body">
+              <div style="font-size:26px;font-weight:600;font-family:var(--mono);letter-spacing:-1px;margin-bottom:4px;color:var(--red);">–32 400 <span style="font-size:14px;color:var(--text-3);">MAD</span></div>
+              <div style="font-size:12px;color:var(--text-3);margin-bottom:12px;">Capital restant · 1 800 MAD/mois · 18 mensualités restantes</div>
+              <div class="obj-bar"><div class="obj-fill" style="width:56%;background:#E24B4A;"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);margin-top:6px;margin-bottom:12px;">
+                <span>56% remboursé</span>
+                <span>Fin prévue : oct. 2027</span>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button class="btn-ghost" style="flex:1;">Voir tableau de remb.</button>
+                <button class="btn-ghost">Modifier</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== INSIGHTS ===== -->
+    <div class="screen" id="screen-insights">
+      <div class="header">
+        <h1>Insights & intelligence</h1>
+        <div class="header-actions">
+          <span style="font-size:12px;font-weight:600;color:#8B5E0A;background:#FEF3DE;padding:5px 12px;border-radius:20px;">★ Premium actif</span>
+        </div>
+      </div>
+      <div class="content">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <!-- Alertes -->
+          <div class="card" style="grid-column:1/-1;">
+            <div class="card-header">
+              <span class="card-title">Alertes & anomalies de la semaine</span>
+              <span style="font-size:11px;color:var(--text-3);">Semaine du 14 au 20 avr.</span>
+            </div>
+            <div class="card-body">
+              <div class="insight-item" style="background:var(--red-bg);">
+                <div class="insight-tag" style="color:var(--red);">Anomalie détectée</div>
+                <div class="insight-text">Vous avez dépensé <strong>920 MAD</strong> en restaurants ce mois — 2,3× plus que votre moyenne des 3 derniers mois (396 MAD). Budget dépassé de 120 MAD.</div>
+              </div>
+              <div class="insight-item" style="background:var(--amber-bg);">
+                <div class="insight-tag" style="color:var(--amber);">Alerte prédictive</div>
+                <div class="insight-text">À votre rythme actuel, vos dépenses loisirs dépasseront votre budget de <strong>190 MAD</strong> d'ici la fin du mois. Rythme actuel : 85 MAD/j vs 25 MAD/j cible.</div>
+              </div>
+              <div class="insight-item" style="background:var(--green-bg);">
+                <div class="insight-tag" style="color:var(--green);">Bonne nouvelle</div>
+                <div class="insight-text">Votre taux d'épargne de <strong>30,7%</strong> est votre meilleur depuis 6 mois. Vous êtes en avance de 2 mois sur votre objectif voyage Japon.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Abonnements -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Mes abonnements détectés</span>
+              <span style="font-size:12px;color:var(--text-3);">5 abonnements actifs</span>
+            </div>
+            <div class="card-body">
+              <div class="txn-item">
+                <div class="txn-icon" style="background:#EEEDFE;">🎬</div>
+                <div class="txn-info"><div class="txn-name">Netflix</div><div class="txn-meta">Mensuel · le 18</div></div>
+                <div class="txn-amount neg">–119 MAD</div>
+              </div>
+              <div class="txn-item">
+                <div class="txn-icon" style="background:#E8F5EE;">🎵</div>
+                <div class="txn-info"><div class="txn-name">Spotify</div><div class="txn-meta">Mensuel · le 20</div></div>
+                <div class="txn-amount neg">–59 MAD</div>
+              </div>
+              <div class="txn-item">
+                <div class="txn-icon" style="background:#E8F1FB;">☁️</div>
+                <div class="txn-info"><div class="txn-name">Google One 2 To</div><div class="txn-meta">Mensuel · le 5</div></div>
+                <div class="txn-amount neg">–39 MAD</div>
+              </div>
+              <div class="txn-item">
+                <div class="txn-icon" style="background:#FEF3DE;">📐</div>
+                <div class="txn-info"><div class="txn-name">Figma Pro</div><div class="txn-meta">Mensuel · le 1</div></div>
+                <div class="txn-amount neg">–199 MAD</div>
+              </div>
+              <div class="txn-item" style="border-bottom:none;padding-bottom:0;">
+                <div class="txn-icon" style="background:#FDECEA;">🛡</div>
+                <div class="txn-info"><div class="txn-name">Assurance Wafa</div><div class="txn-meta">Mensuel · le 28</div></div>
+                <div class="txn-amount neg">–290 MAD</div>
+              </div>
+              <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:12px;">
+                <span style="color:var(--text-3);">Total mensuel</span>
+                <span style="font-weight:600;font-family:var(--mono);">706 MAD · 8 472 MAD/an</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Conseils & digest -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Conseil de la semaine</span>
+              <span style="font-size:11px;color:var(--text-3);">Personnalisé pour vous</span>
+            </div>
+            <div class="card-body">
+              <div style="font-size:11px;font-weight:600;color:var(--blue);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Optimisation</div>
+              <div style="font-size:13px;line-height:1.6;margin-bottom:16px;">En regroupant vos courses en 1–2 passages par semaine au lieu de 4–5 petits achats, vous économiseriez en moyenne <strong>320 MAD/mois</strong> d'après votre historique alimentation.</div>
+              <div style="font-size:11px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Prévision solde</div>
+              <div style="font-size:13px;line-height:1.6;margin-bottom:16px;">Avec les récurrences et factures planifiées, votre solde estimé au <strong>30 avril</strong> est de <strong style="color:var(--green);">16 890 MAD</strong>. Aucun risque de découvert détecté.</div>
+              <div style="padding:12px;background:var(--surface2);border-radius:var(--radius-sm);font-size:12px;line-height:1.5;color:var(--text-2);">
+                <strong style="color:var(--text-1);">Digest lundi 21 avr.</strong><br/>Vous avez dépensé 2 180 MAD cette semaine (+8% vs sem. précédente). Top 3 : Alimentation 800 MAD · Restaurants 395 MAD · Transport 280 MAD.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SETTINGS ===== -->
+    <div class="screen" id="screen-settings">
+      <div class="header">
+        <h1>Paramètres</h1>
+      </div>
+      <div class="content">
+        <div class="settings-layout">
+          <div class="settings-nav">
+            <div class="settings-nav-item active">Profil</div>
+            <div class="settings-nav-item">Comptes & devises</div>
+            <div class="settings-nav-item">Notifications</div>
+            <div class="settings-nav-item">Sécurité & 2FA</div>
+            <div class="settings-nav-item">Abonnement</div>
+            <div class="settings-nav-item">Export & données</div>
+            <div class="settings-nav-item" style="color:var(--red);margin-top:12px;border-top:1px solid var(--border);padding-top:8px;">Supprimer mon compte</div>
+          </div>
+          <div>
+            <div class="premium-banner">
+              <div style="font-size:24px;">★</div>
+              <div class="premium-banner-text">
+                <div class="title">Plan Premium actif</div>
+                <div class="desc">Prochain renouvellement le 15 mai 2026 · 99 MAD/mois</div>
+              </div>
+              <button class="btn-white">Gérer</button>
+            </div>
+            <div class="settings-panel">
+              <div class="settings-section">
+                <div class="settings-section-title">Profil utilisateur</div>
+                <div class="profile-card">
+                  <div class="avatar-lg">KA</div>
+                  <div>
+                    <div style="font-size:14px;font-weight:600;">Karim Alaoui</div>
+                    <div style="font-size:12px;color:var(--text-3);">k.alaoui@freelance.ma · Membre depuis janv. 2025</div>
+                  </div>
+                  <button class="btn-ghost" style="margin-left:auto;">Changer la photo</button>
+                </div>
+                <div class="field-group">
+                  <div class="field"><label>Prénom</label><input type="text" value="Karim"/></div>
+                  <div class="field"><label>Nom</label><input type="text" value="Alaoui"/></div>
+                  <div class="field"><label>Email</label><input type="email" value="k.alaoui@freelance.ma"/></div>
+                  <div class="field"><label>Fuseau horaire</label><select><option>Africa/Casablanca (GMT+1)</option></select></div>
+                  <div class="field"><label>Devise de référence</label><select><option>MAD — Dirham marocain</option></select></div>
+                  <div class="field"><label>Langue</label><select><option>Français</option></select></div>
+                </div>
+                <div style="margin-top:14px;display:flex;gap:10px;">
+                  <button class="btn-primary">Enregistrer les modifications</button>
+                  <button class="btn-ghost">Annuler</button>
+                </div>
+              </div>
+              <div class="settings-section">
+                <div class="settings-section-title">Préférences d'affichage</div>
+                <div class="settings-row">
+                  <div><div class="settings-row-label">Mode sombre</div><div class="settings-row-desc">Basculer entre thème clair et sombre</div></div>
+                  <div class="toggle off"></div>
+                </div>
+                <div class="settings-row">
+                  <div><div class="settings-row-label">Streak quotidien</div><div class="settings-row-desc">Afficher le compteur de jours consécutifs de saisie</div></div>
+                  <div class="toggle"></div>
+                </div>
+                <div class="settings-row">
+                  <div><div class="settings-row-label">Achievements</div><div class="settings-row-desc">Afficher les jalons débloqués sur le tableau de bord</div></div>
+                  <div class="toggle"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const screen = document.getElementById('screen-' + name);
+  if (screen) screen.classList.add('active');
+  const items = document.querySelectorAll('.nav-item');
+  const labels = {dashboard:'Tableau de bord',transactions:'Transactions',budgets:'Budgets',objectifs:'Objectifs',insights:'Insights',empty:'Première utilisation',settings:'Paramètres'};
+  items.forEach(item => {
+    if (item.textContent.trim().startsWith(labels[name] || '___')) item.classList.add('active');
+  });
+  document.querySelector('.main').scrollTo(0, 0);
+}
+</script>
